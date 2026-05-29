@@ -1,0 +1,41 @@
+{
+  "project": "ai-engineering-from-scratch",
+  "started": "2026-05-29T12:00:00Z",
+  "last_updated": "2026-05-29T12:00:00Z",
+  "pipeline": {
+    "scanner": {"status": "pending"},
+    "glossary": {"status": "pending"},
+    "translator": {"status": "pending"},
+    "reviewer": {"status": "pending"},
+    "editor": {"status": "pending"},
+    "format_checker": {"status": "pending"},
+    "diff_reviewer": {"status": "pending"},
+    "commit": {"status": "pending"}
+  },
+  "phases": {
+    "00-setup-and-tooling": {"status": "pending", "files": []},
+    "01-math-foundations": {"status": "pending", "files": []},
+    "02-ml-fundamentals": {"status": "pending", "files": []},
+    "03-deep-learning-core": {"status": "pending", "files": []},
+    "04-computer-vision": {"status": "pending", "files": []},
+    "05-nlp-foundations-to-advanced": {"status": "pending", "files": []},
+    "06-speech-and-audio": {"status": "pending", "files": []},
+    "07-transformers-deep-dive": {"status": "pending", "files": []},
+    "08-generative-ai": {"status": "pending", "files": []},
+    "09-reinforcement-learning": {"status": "pending", "files": []},
+    "10-llms-from-scratch": {"status": "pending", "files": []},
+    "11-llm-engineering": {"status": "pending", "files": []},
+    "12-multimodal-ai": {"status": "pending", "files": []},
+    "13-tools-and-protocols": {"status": "pending", "files": []},
+    "14-agent-engineering": {"status": "pending", "files": []},
+    "15-autonomous-systems": {"status": "pending", "files": []},
+    "16-multi-agent-and-swarms": {"status": "pending", "files": []},
+    "17-infrastructure-and-production": {"status": "pending", "files": []},
+    "18-ethics-safety-alignment": {"status": "pending", "files": []},
+    "19-capstone-projects": {"status": "pending", "files": []}
+  },
+  "docs": {
+    "status": "pending",
+    "files": ["README.md", "ROADMAP.md", "CONTRIBUTING.md", "CHANGELOG.md", "SPONSORS.md"]
+  }
+}
