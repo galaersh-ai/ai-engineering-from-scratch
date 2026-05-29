@@ -31,16 +31,16 @@
 
 ```mermaid
 graph TD
-    subgraph without["Без виртуальных окружений"]
-        SP[System Python] --> T24["torch 2.4.0 (CUDA 12.4)\nНужно проекту A"]
-        SP --> T21["torch 2.1.0 (CUDA 11.8)\nНужно проекту B"]
-        SP --> CONFLICT["КОНФЛИКТ: может существовать\nтолько одна версия torch"]
+    subgraph without["Without virtual environments"]
+        SP[System Python] --> T24["torch 2.4.0 (CUDA 12.4)\nProject A needs this"]
+        SP --> T21["torch 2.1.0 (CUDA 11.8)\nProject B needs this"]
+        SP --> CONFLICT["CONFLICT: only one\ntorch version can exist"]
     end
 
-    subgraph with["С виртуальными окружениями"]
-        PA["Проект A (.venv/)"] --> PA1["torch 2.4.0 (CUDA 12.4)"]
+    subgraph with["With virtual environments"]
+        PA["Project A (.venv/)"] --> PA1["torch 2.4.0 (CUDA 12.4)"]
         PA --> PA2["transformers 4.44"]
-        PB["Проект B (.venv/)"] --> PB1["torch 2.1.0 (CUDA 11.8)"]
+        PB["Project B (.venv/)"] --> PB1["torch 2.1.0 (CUDA 11.8)"]
         PB --> PB2["diffusers 0.28"]
     end
 ```
@@ -98,7 +98,7 @@ Conda управляет не-Python-зависимостями: CUDA toolkit, c
 - Инструкция библиотеки говорит «используйте conda»
 
 ```bash
-# Установка miniconda (не полный Anaconda)
+# Install miniconda (not the full Anaconda)
 curl -LsSf https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -o miniconda.sh
 bash miniconda.sh -b
 
@@ -118,16 +118,16 @@ conda install pytorch torchvision torchaudio pytorch-cuda=12.4 -c pytorch -c nvi
 
 ```
 ai-engineering-from-scratch/
-├── .venv/                    <-- общее лёгкое окружение для фаз 0-3
+├── .venv/                    <-- shared lightweight env for phases 0-3
 ├── phases/
 │   ├── 04-neural-networks/
-│   │   └── .venv/            <-- PyTorch-окружение
+│   │   └── .venv/            <-- PyTorch env
 │   ├── 05-cnns/
-│   │   └── .venv/            <-- то же PyTorch-окружение (симлинк или общее)
+│   │   └── .venv/            <-- same PyTorch env (symlink or shared)
 │   ├── 08-transformers/
-│   │   └── .venv/            <-- могут понадобиться другие версии transformers
+│   │   └── .venv/            <-- might need different transformer versions
 │   └── 11-llm-apis/
-│       └── .venv/            <-- API SDK, torch не нужен
+│       └── .venv/            <-- API SDKs, no torch needed
 ```
 
 Скрипт `code/env_setup.sh` создаёт базовое окружение для курса.
@@ -156,9 +156,9 @@ llm = ["anthropic>=0.39", "openai>=1.50"]
 Установка:
 
 ```bash
-uv pip install -e ".[torch]"    # база + PyTorch
-uv pip install -e ".[llm]"     # база + LLM SDK
-uv pip install -e ".[torch,llm]" # всё
+uv pip install -e ".[torch]"    # base + PyTorch
+uv pip install -e ".[llm]"     # base + LLM SDKs
+uv pip install -e ".[torch,llm]" # everything
 ```
 
 ## Lock-файлы
@@ -166,10 +166,10 @@ uv pip install -e ".[torch,llm]" # всё
 Lock-файл фиксирует каждую зависимость (включая транзитивные) до точной версии. Это гарантирует воспроизводимость: кто бы ни устанавливал из lock-файла, получает точно те же пакеты.
 
 ```bash
-# uv генерирует uv.lock автоматически при использовании uv add
+# uv generates uv.lock automatically when using uv add
 uv add numpy
 
-# подход с pip-tools
+# pip-tools approach
 uv pip compile pyproject.toml -o requirements.lock
 uv pip install -r requirements.lock
 ```
@@ -181,17 +181,17 @@ uv pip install -r requirements.lock
 ### 1. Глобальная установка
 
 ```bash
-pip install torch  # ПЛОХО: ставится в системный Python
+pip install torch  # BAD: installs to system Python
 
 source .venv/bin/activate
-pip install torch  # ХОРОШО: ставится в виртуальное окружение
+pip install torch  # GOOD: installs to virtual environment
 ```
 
 Проверь, куда идут пакеты:
 
 ```bash
-which python       # должно показывать .venv/bin/python, а не /usr/bin/python
-which pip           # должно показывать .venv/bin/pip
+which python       # should show .venv/bin/python, not /usr/bin/python
+which pip           # should show .venv/bin/pip
 ```
 
 ### 2. Смешивание pip и conda
@@ -200,8 +200,8 @@ which pip           # должно показывать .venv/bin/pip
 conda create -n myenv python=3.12
 conda activate myenv
 conda install pytorch -c pytorch
-pip install some-other-package   # ПЛОХО: может сломать отслеживание зависимостей conda
-conda install some-other-package # ХОРОШО: пусть conda управляет всем
+pip install some-other-package   # BAD: can break conda's dependency tracking
+conda install some-other-package # GOOD: let conda manage everything
 ```
 
 Если вынужден использовать pip внутри conda (некоторые пакеты есть только в pip), сначала установи все conda-пакеты, затем pip-пакеты в последнюю очередь.
@@ -209,9 +209,9 @@ conda install some-other-package # ХОРОШО: пусть conda управля
 ### 3. Забыл активировать
 
 ```bash
-python train.py           # использует системный Python, пакеты не найдены
+python train.py           # uses system Python, missing packages
 source .venv/bin/activate
-python train.py           # использует Python проекта, пакеты найдены
+python train.py           # uses project Python, packages found
 ```
 
 В приглашении командной строки должно отображаться имя окружения:
@@ -231,11 +231,11 @@ echo ".venv/" >> .gitignore
 ### 5. Несовместимость версий CUDA
 
 ```bash
-nvidia-smi                # показывает версию CUDA драйвера (например, 12.4)
-python -c "import torch; print(torch.version.cuda)"  # показывает версию CUDA в PyTorch
+nvidia-smi                # shows driver CUDA version (e.g., 12.4)
+python -c "import torch; print(torch.version.cuda)"  # shows PyTorch CUDA version
 
-# Они должны быть совместимы.
-# Версия CUDA в PyTorch должна быть <= версии CUDA драйвера.
+# These must be compatible.
+# PyTorch CUDA version must be <= driver CUDA version.
 ```
 
 ## Используем
