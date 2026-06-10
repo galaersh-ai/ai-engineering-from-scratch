@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Translation Reviewer - AI Engineering from Scratch</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23fafaf5'/><rect x='2' y='2' width='28' height='28' fill='none' stroke='%233553ff' stroke-width='1.2'/><text x='6' y='22' font-size='14' font-family='monospace' fill='%233553ff'>AI</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Source+Serif+4:ital,opsz,wght@0,8..60,400..700;1,8..60,400..700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20260525a">
+  <style>
+    body {
+      overflow: hidden;
+    }
+
+    .reviewer-shell {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr) 320px;
+      min-height: 100vh;
+      padding-top: 64px;
+    }
+
+    .reviewer-sidebar {
+      border-right: 1px solid var(--rule-soft);
+      background: var(--bg);
+      overflow-y: auto;
+      height: calc(100vh - 64px);
+      padding: 18px 0 28px;
+    }
+
+    .reviewer-sidebar-title {
+      padding: 0 18px 14px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      border-bottom: 1px solid var(--rule-soft);
+    }
+
+    .reviewer-phase-title {
+      padding: 18px 18px 6px;
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      letter-spacing: 0.13em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+
+    .reviewer-lesson-link {
+      display: block;
+      padding: 7px 18px;
+      border-left: 2px solid transparent;
+      border-bottom: none;
+      color: var(--ink-soft);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      line-height: 1.3;
+    }
+
+    .reviewer-lesson-link:hover,
+    .reviewer-lesson-link.active {
+      color: var(--blueprint);
+      background: var(--blueprint-tint);
+      border-left-color: var(--blueprint);
+      border-bottom: none;
+    }
+
+    .reviewer-main {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      min-width: 0;
+      height: calc(100vh - 64px);
+    }
+
+    .reviewer-toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--rule-soft);
+      background: var(--bg);
+    }
+
+    .reviewer-title {
+      min-width: 0;
+    }
+
+    .reviewer-title h1 {
+      font-size: 1.55rem;
+      color: var(--blueprint);
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .reviewer-meta {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+
+    .reviewer-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .reviewer-select {
+      display: none;
+      width: 100%;
+      min-width: 0;
+      padding: 8px 10px;
+      border: 1px solid var(--rule-soft);
+      background: var(--bg-surface);
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+    }
+
+    .reviewer-btn {
+      border: 1px solid var(--rule-soft);
+      background: transparent;
+      color: var(--ink);
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+
+    .reviewer-btn:hover,
+    .reviewer-btn.active {
+      border-color: var(--blueprint);
+      color: var(--blueprint);
+      background: var(--blueprint-tint);
+    }
+
+    .reviewer-columns {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      min-height: 0;
+    }
+
+    .reviewer-column {
+      min-width: 0;
+      height: 100%;
+      overflow-y: auto;
+      padding: 28px clamp(18px, 3vw, 38px) 80px;
+      background: var(--bg);
+    }
+
+    .reviewer-column + .reviewer-column {
+      border-left: 1px solid var(--rule-soft);
+      background: color-mix(in srgb, var(--bg) 88%, var(--bg-surface));
+    }
+
+    .column-label {
+      position: sticky;
+      top: -28px;
+      z-index: 3;
+      margin: -28px 0 22px;
+      padding: 12px 0 10px;
+      background: var(--bg);
+      border-bottom: 1px solid var(--rule-soft);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+    }
+
+    .reviewer-column + .reviewer-column .column-label {
+      background: color-mix(in srgb, var(--bg) 88%, var(--bg-surface));
+    }
+
+    .review-block {
+      position: relative;
+      padding: 8px 10px;
+      margin: 0 -10px 10px;
+      border-left: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .review-block:hover,
+    .review-block.selected {
+      background: var(--blueprint-tint);
+      border-left-color: var(--blueprint);
+    }
+
+    .review-block.has-issue {
+      border-left-color: var(--warn);
+    }
+
+    .review-block h1,
+    .review-block h2,
+    .review-block h3 {
+      margin: 0 0 10px;
+      color: var(--blueprint);
+    }
+
+    .review-block h1 { font-size: 2rem; }
+    .review-block h2 { font-size: 1.45rem; }
+    .review-block h3 {
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      letter-spacing: 0.12em;
+    }
+
+    .review-block p,
+    .review-block li,
+    .review-block blockquote {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--ink);
+      margin: 0;
+      text-align: left;
+    }
+
+    .review-block blockquote {
+      border-left: 2px solid var(--blueprint);
+      padding-left: 14px;
+      color: var(--ink-soft);
+      font-style: italic;
+    }
+
+    .review-block pre {
+      overflow-x: auto;
+      margin: 0;
+      padding: 14px;
+      border: 1px solid var(--rule-soft);
+      background: var(--code-bg);
+      font-size: 0.78rem;
+      line-height: 1.5;
+    }
+
+    .paragraph-tools {
+      position: absolute;
+      top: -8px;
+      right: 6px;
+      display: flex;
+      gap: 3px;
+      align-items: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.12s ease;
+      z-index: 4;
+    }
+
+    .paragraph-tools button {
+      width: 19px;
+      height: 19px;
+      border: 1px solid var(--rule-soft);
+      background: var(--bg);
+      color: var(--ink-soft);
+      font-family: var(--font-mono);
+      font-size: 0.58rem;
+      line-height: 1;
+      letter-spacing: 0;
+      text-transform: uppercase;
+      padding: 0;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .review-block:hover .paragraph-tools,
+    .review-block.selected .paragraph-tools,
+    .paragraph-tools:focus-within {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .paragraph-tools button:hover,
+    .paragraph-tools button.active {
+      border-color: var(--blueprint);
+      color: var(--blueprint);
+      background: var(--blueprint-tint);
+    }
+
+    .paragraph-tools button[data-action="delete"]:hover {
+      border-color: var(--warn);
+      color: var(--warn);
+    }
+
+    .review-panel {
+      height: calc(100vh - 64px);
+      overflow-y: auto;
+      border-left: 1px solid var(--rule-soft);
+      background: var(--bg-surface);
+      padding: 18px;
+    }
+
+    .panel-section {
+      border-bottom: 1px solid var(--rule-soft);
+      padding-bottom: 18px;
+      margin-bottom: 18px;
+    }
+
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      color: var(--blueprint);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+    }
+
+    .panel-muted {
+      color: var(--ink-mute);
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .panel-text {
+      margin-top: 10px;
+      padding: 10px;
+      border: 1px solid var(--rule-soft);
+      background: var(--bg);
+      font-size: 0.9rem;
+      line-height: 1.45;
+      max-height: 180px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    .panel-field {
+      width: 100%;
+      min-height: 92px;
+      margin-top: 8px;
+      padding: 10px;
+      border: 1px solid var(--rule-soft);
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      line-height: 1.45;
+      resize: vertical;
+    }
+
+    .flag-row {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .flag-row label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.74rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-soft);
+    }
+
+    .issue-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .issue-item {
+      width: 100%;
+      text-align: left;
+      border: 1px solid var(--rule-soft);
+      background: var(--bg);
+      color: var(--ink);
+      padding: 8px;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.86rem;
+      line-height: 1.35;
+    }
+
+    .issue-item:hover {
+      border-color: var(--blueprint);
+      background: var(--blueprint-tint);
+    }
+
+    .warning {
+      display: none;
+      padding: 8px 10px;
+      border: 1px solid var(--warn);
+      color: var(--warn);
+      background: var(--bg);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .warning.visible {
+      display: block;
+    }
+
+    @media (max-width: 980px) {
+      .reviewer-shell {
+        grid-template-columns: 220px minmax(0, 1fr) 280px;
+      }
+
+      .reviewer-sidebar {
+        display: block;
+      }
+
+      .reviewer-toolbar {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .reviewer-actions {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 860px) {
+      body {
+        overflow: auto;
+      }
+
+      .reviewer-shell {
+        display: block;
+        padding-top: 56px;
+      }
+
+      .reviewer-sidebar {
+        display: none;
+      }
+
+      .reviewer-select {
+        display: block;
+      }
+
+      .reviewer-main,
+      .review-panel {
+        height: auto;
+      }
+
+      .reviewer-columns {
+        grid-template-columns: 1fr;
+      }
+
+      .reviewer-column {
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        border-left: none !important;
+      }
+
+      .review-panel {
+        border-left: none;
+        border-top: 1px solid var(--rule-soft);
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#reviewerWorkspace">Skip to reviewer</a>
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="index.html" class="logo"><span class="logo-icon"></span><span>AI Engineering</span></a>
+      <nav class="header-nav" aria-label="Primary">
+        <a href="catalog.html">Catalog</a>
+        <a href="lesson.html">Lesson</a>
+        <a href="reviewer.html">Reviewer</a>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle theme"><span id="themeIcon">D</span></button>
+      </nav>
+    </div>
+  </header>
+
+  <div class="reviewer-shell" id="reviewerWorkspace">
+    <aside class="reviewer-sidebar" id="lessonSidebar" aria-label="Lessons">
+      <div class="reviewer-sidebar-title">Translation review</div>
+    </aside>
+
+    <main class="reviewer-main">
+      <div class="reviewer-toolbar">
+        <div class="reviewer-title">
+          <select class="reviewer-select" id="lessonSelect" aria-label="Choose lesson"></select>
+          <h1 id="lessonTitle">Loading lesson...</h1>
+          <div class="reviewer-meta" id="lessonMeta">EN / RU paragraph review</div>
+        </div>
+        <div class="reviewer-actions">
+          <div class="warning" id="mismatchWarning"></div>
+          <button class="reviewer-btn" type="button" id="exportLesson">Export lesson</button>
+          <button class="reviewer-btn" type="button" id="exportAll">Export all pending</button>
+        </div>
+      </div>
+
+      <div class="reviewer-columns">
+        <section class="reviewer-column" id="englishColumn" aria-label="English lesson">
+          <div class="column-label">English</div>
+          <div id="englishContent"></div>
+        </section>
+        <section class="reviewer-column" id="russianColumn" aria-label="Russian lesson">
+          <div class="column-label">Русский</div>
+          <div id="russianContent"></div>
+        </section>
+      </div>
+    </main>
+
+    <aside class="review-panel" id="reviewPanel" aria-label="Review panel">
+      <div class="panel-section">
+        <div class="panel-title">Paragraph</div>
+        <div class="panel-muted" id="selectedId">Select a paragraph</div>
+        <div class="panel-text" id="selectedEnglish">English source will appear here.</div>
+        <div class="panel-text" id="selectedRussian">Russian translation will appear here.</div>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-title">Flags</div>
+        <div class="flag-row">
+          <label><input type="checkbox" id="flagBad"> translation bad</label>
+          <label><input type="checkbox" id="flagRetranslate"> needs_retranslation</label>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-title">Comment</div>
+        <textarea class="panel-field" id="commentField" placeholder="Комментарий к переводу"></textarea>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-title">Edit RU</div>
+        <textarea class="panel-field" id="editField" placeholder="Локальная правка русского абзаца"></textarea>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-title">Issues</div>
+        <div class="panel-muted" id="issueCount">0 pending</div>
+        <div class="issue-list" id="issueList"></div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="progress.js?v=20260525a"></script>
+  <script src="data.js?v=20260525a"></script>
+  <script src="reviewer-data.js?v=20260610a"></script>
+  <script src="header.js?v=20260525a"></script>
+  <script>
+    (function () {
+      var STORAGE_KEY = 'aifs:translation-review:v1';
+      var state = loadState();
+      var lessons = [];
+      var currentLesson = null;
+      var currentLessonPath = '';
+      var currentBlocks = { en: [], ru: [] };
+      var visibleBlocks = { en: [], ru: [] };
+      var selectedId = null;
+      var isSyncingScroll = false;
+
+      var els = {
+        sidebar: document.getElementById('lessonSidebar'),
+        lessonSelect: document.getElementById('lessonSelect'),
+        lessonTitle: document.getElementById('lessonTitle'),
+        lessonMeta: document.getElementById('lessonMeta'),
+        englishColumn: document.getElementById('englishColumn'),
+        russianColumn: document.getElementById('russianColumn'),
+        englishContent: document.getElementById('englishContent'),
+        russianContent: document.getElementById('russianContent'),
+        mismatchWarning: document.getElementById('mismatchWarning'),
+        selectedId: document.getElementById('selectedId'),
+        selectedEnglish: document.getElementById('selectedEnglish'),
+        selectedRussian: document.getElementById('selectedRussian'),
+        flagBad: document.getElementById('flagBad'),
+        flagRetranslate: document.getElementById('flagRetranslate'),
+        commentField: document.getElementById('commentField'),
+        editField: document.getElementById('editField'),
+        issueCount: document.getElementById('issueCount'),
+        issueList: document.getElementById('issueList'),
+        exportLesson: document.getElementById('exportLesson'),
+        exportAll: document.getElementById('exportAll')
+      };
+
+      init();
+
+      function init() {
+        lessons = flattenLessons();
+        renderLessonNav();
+        bindControls();
+        bindScrollSync();
+
+        var requested = getRequestedPath();
+        var first = lessons.filter(function (lesson) { return lesson.path; })[0];
+        var target = findLesson(requested) || first;
+        if (!target) {
+          showFatal('No lessons found in site/data.js.');
+          return;
+        }
+        loadLesson(target.path, true);
+      }
+
+      function flattenLessons() {
+        var out = [];
+        if (typeof PHASES === 'undefined') return out;
+        PHASES.forEach(function (phase, phaseIndex) {
+          phase.lessons.forEach(function (lesson, lessonIndex) {
+            var path = extractLessonPath(lesson.url);
+            if (!path) return;
+            out.push({
+              path: path,
+              name: lesson.name,
+              status: lesson.status,
+              type: lesson.type,
+              phaseIndex: phaseIndex,
+              lessonIndex: lessonIndex,
+              phaseId: phase.id,
+              phaseName: phase.name
+            });
+          });
+        });
+        return out;
+      }
+
+      function extractLessonPath(url) {
+        if (!url) return '';
+        var match = String(url).match(/(phases\/[^/]+\/[^/]+)\/?$/);
+        return match ? match[1] : '';
+      }
+
+      function getRequestedPath() {
+        var params = new URLSearchParams(window.location.search);
+        return normalizeLessonPath(params.get('path') || '');
+      }
+
+      function normalizeLessonPath(path) {
+        return String(path || '').replace(/^\/+/, '').replace(/\/$/, '');
+      }
+
+      function findLesson(path) {
+        path = normalizeLessonPath(path);
+        return lessons.find(function (lesson) { return lesson.path === path; });
+      }
+
+      function renderLessonNav() {
+        var sidebarHtml = '<div class="reviewer-sidebar-title">Translation review</div>';
+        var selectHtml = '';
+        var lastPhase = null;
+
+        lessons.forEach(function (lesson) {
+          if (lesson.phaseIndex !== lastPhase) {
+            lastPhase = lesson.phaseIndex;
+            sidebarHtml += '<div class="reviewer-phase-title">Phase ' + pad2(lesson.phaseId) + ' · ' + escapeHtml(lesson.phaseName) + '</div>';
+          }
+          sidebarHtml += '<a class="reviewer-lesson-link" data-path="' + escapeAttr(lesson.path) + '" href="reviewer.html?path=' + encodeURIComponent(lesson.path) + '">' + escapeHtml(lesson.name) + '</a>';
+          selectHtml += '<option value="' + escapeAttr(lesson.path) + '">Phase ' + pad2(lesson.phaseId) + ' · ' + escapeHtml(lesson.name) + '</option>';
+        });
+
+        els.sidebar.innerHTML = sidebarHtml;
+        els.lessonSelect.innerHTML = selectHtml;
+
+        els.sidebar.addEventListener('click', function (event) {
+          var link = event.target.closest('[data-path]');
+          if (!link) return;
+          event.preventDefault();
+          loadLesson(link.getAttribute('data-path'), true);
+        });
+
+        els.lessonSelect.addEventListener('change', function () {
+          loadLesson(els.lessonSelect.value, true);
+        });
+      }
+
+      function bindControls() {
+        els.flagBad.addEventListener('change', function () {
+          updateSelectedRecord({ bad_translation: els.flagBad.checked });
+        });
+        els.flagRetranslate.addEventListener('change', function () {
+          updateSelectedRecord({ needs_retranslation: els.flagRetranslate.checked });
+        });
+        els.commentField.addEventListener('input', function () {
+          updateSelectedRecord({ comment: els.commentField.value });
+        });
+        els.editField.addEventListener('input', function () {
+          updateSelectedRecord({ editedRuText: els.editField.value });
+          updateRenderedEditedText();
+        });
+        els.exportLesson.addEventListener('click', function () {
+          if (!currentLessonPath) return;
+          downloadJson(buildReviewExport(currentLessonPath), buildLessonExportName(currentLessonPath));
+          markExported(currentLessonPath);
+        });
+        els.exportAll.addEventListener('click', function () {
+          downloadJson(buildAllPendingExport(), 'translation-review-export.' + timestampForFile() + '.json');
+        });
+      }
+
+      function bindScrollSync() {
+        syncScroll(els.englishColumn, els.russianColumn);
+        syncScroll(els.russianColumn, els.englishColumn);
+      }
+
+      function syncScroll(from, to) {
+        from.addEventListener('scroll', function () {
+          if (isSyncingScroll || window.innerWidth <= 860) return;
+          isSyncingScroll = true;
+          var maxFrom = Math.max(1, from.scrollHeight - from.clientHeight);
+          var maxTo = Math.max(1, to.scrollHeight - to.clientHeight);
+          to.scrollTop = (from.scrollTop / maxFrom) * maxTo;
+          window.setTimeout(function () { isSyncingScroll = false; }, 30);
+        }, { passive: true });
+      }
+
+      function loadLesson(path, pushHistory) {
+        path = normalizeLessonPath(path);
+        var lesson = findLesson(path);
+        if (!lesson) return;
+
+        currentLesson = lesson;
+        currentLessonPath = lesson.path;
+        selectedId = null;
+        els.lessonTitle.textContent = lesson.name;
+        els.lessonMeta.textContent = 'Phase ' + pad2(lesson.phaseId) + ' · ' + lesson.phaseName;
+        els.lessonSelect.value = lesson.path;
+        updateActiveLessonLink();
+        clearSelectionPanel();
+
+        if (pushHistory) {
+          var url = 'reviewer.html?path=' + encodeURIComponent(lesson.path);
+          window.history.replaceState(null, '', url);
+        }
+
+        els.englishContent.innerHTML = '<p class="panel-muted">Loading English...</p>';
+        els.russianContent.innerHTML = '<p class="panel-muted">Loading Russian...</p>';
+
+        Promise.all([
+          fetchMarkdown(lesson.path + '/docs/en.md'),
+          fetchMarkdown(lesson.path + '/docs/ru.md')
+        ]).then(function (values) {
+          currentBlocks.en = parseMarkdownBlocks(normalizeMarkdownSource(values[0]));
+          currentBlocks.ru = parseMarkdownBlocks(normalizeMarkdownSource(values[1]));
+          renderBlocks();
+          renderIssueSummary();
+          selectFirstIssueOrParagraph();
+        }).catch(function (error) {
+          showFatal(error.message || String(error));
+        });
+      }
+
+      function fetchMarkdown(relativePath) {
+        var bundled = readBundledMarkdown(relativePath);
+        if (window.location.protocol === 'file:' && bundled != null) {
+          return Promise.resolve(bundled);
+        }
+
+        return fetch('../' + relativePath, { cache: 'no-cache' }).then(function (response) {
+          if (!response.ok) throw new Error('Cannot load ' + relativePath + ' (' + response.status + ')');
+          return response.text();
+        }).catch(function (error) {
+          if (bundled != null) return bundled;
+          throw error;
+        });
+      }
+
+      function readBundledMarkdown(relativePath) {
+        if (!window.REVIEWER_MARKDOWN) return null;
+        var match = String(relativePath).match(/^(phases\/[^/]+\/[^/]+)\/docs\/(en|ru)\.md$/);
+        if (!match) return null;
+        var lesson = window.REVIEWER_MARKDOWN[match[1]];
+        if (!lesson) return null;
+        var value = lesson[match[2]];
+        return typeof value === 'string' ? value : null;
+      }
+
+      function normalizeMarkdownSource(markdown) {
+        var text = String(markdown || '').replace(/\r\n/g, '\n');
+        var numberedLines = text.split('\n').filter(function (line) {
+          return /^\s*\d+\|/.test(line);
+        }).length;
+        if (numberedLines < 3) return text;
+        return text.replace(/^\s*\d+\| ?/gm, '');
+      }
+
+      function parseMarkdownBlocks(markdown) {
+        var lines = String(markdown || '').replace(/\r\n/g, '\n').split('\n');
+        var blocks = [];
+        var paragraph = [];
+        var inCode = false;
+        var codeLines = [];
+
+        function flushParagraph() {
+          if (!paragraph.length) return;
+          addBlock('p', paragraph.join(' '));
+          paragraph = [];
+        }
+
+        function addBlock(type, text, extra) {
+          var index = blocks.length + 1;
+          blocks.push({
+            id: 'p-' + String(index).padStart(4, '0'),
+            rawId: 'raw-' + String(index).padStart(4, '0'),
+            rawIndex: index,
+            index: index,
+            type: type,
+            text: text,
+            lang: extra && extra.lang ? extra.lang : ''
+          });
+        }
+
+        lines.forEach(function (line) {
+          var fence = line.match(/^```(.*)$/);
+          if (fence) {
+            if (inCode) {
+              addBlock('pre', codeLines.join('\n'));
+              codeLines = [];
+              inCode = false;
+            } else {
+              flushParagraph();
+              inCode = true;
+            }
+            return;
+          }
+
+          if (inCode) {
+            codeLines.push(line);
+            return;
+          }
+
+          if (!line.trim()) {
+            flushParagraph();
+            return;
+          }
+
+          var heading = line.match(/^(#{1,3})\s+(.+)$/);
+          if (heading) {
+            flushParagraph();
+            addBlock('h' + heading[1].length, heading[2].trim());
+            return;
+          }
+
+          var quote = line.match(/^>\s?(.*)$/);
+          if (quote) {
+            flushParagraph();
+            addBlock('blockquote', quote[1].trim());
+            return;
+          }
+
+          var unordered = line.match(/^[-*]\s+(.+)$/);
+          if (unordered) {
+            flushParagraph();
+            addBlock('li', unordered[1].trim());
+            return;
+          }
+
+          var ordered = line.match(/^\d+\.\s+(.+)$/);
+          if (ordered) {
+            flushParagraph();
+            addBlock('li', ordered[1].trim());
+            return;
+          }
+
+          paragraph.push(line.trim());
+        });
+
+        if (inCode) addBlock('pre', codeLines.join('\n'));
+        flushParagraph();
+        return blocks;
+      }
+
+      function renderBlocks() {
+        visibleBlocks = getVisibleBlocks();
+
+        els.englishContent.innerHTML = visibleBlocks.en.map(function (block) {
+          return renderReviewBlock(block, 'en');
+        }).join('');
+
+        els.russianContent.innerHTML = visibleBlocks.ru.map(function (block) {
+          return renderReviewBlock(block, 'ru');
+        }).join('');
+
+        var warning = els.mismatchWarning;
+        if (visibleBlocks.en.length !== visibleBlocks.ru.length) {
+          warning.textContent = 'Block count mismatch: EN ' + visibleBlocks.en.length + ' / RU ' + visibleBlocks.ru.length;
+          warning.classList.add('visible');
+        } else {
+          warning.textContent = '';
+          warning.classList.remove('visible');
+        }
+
+        bindBlockClicks();
+        paintIssueClasses();
+      }
+
+      function getVisibleBlocks() {
+        return {
+          en: currentBlocks.en.map(function (block, index) {
+            return withAlignedId(block, index);
+          }),
+          ru: currentBlocks.ru.filter(function (block) {
+            return !isRuBlockDeleted(block.rawId);
+          }).map(function (block, index) {
+            return withAlignedId(block, index);
+          })
+        };
+      }
+
+      function withAlignedId(block, index) {
+        return Object.assign({}, block, {
+          id: 'p-' + String(index + 1).padStart(4, '0'),
+          index: index + 1
+        });
+      }
+
+      function renderReviewBlock(block, side) {
+        var record = getParagraphRecord(block.id);
+        var text = side === 'ru' && record.editedRuText ? record.editedRuText : block.text;
+        var html = '<div class="review-block" data-side="' + side + '" data-id="' + block.id + '" data-raw-id="' + escapeAttr(block.rawId || '') + '" id="' + side + '-' + block.id + '">';
+        html += renderBlockContent(block.type, text);
+        if (side === 'ru') {
+          html += '<div class="paragraph-tools">';
+          html += '<button type="button" data-action="edit" title="Редактировать" aria-label="Редактировать">E</button>';
+          html += '<button type="button" data-action="bad" title="Плохой перевод" aria-label="Плохой перевод" class="' + (record.bad_translation ? 'active' : '') + '">!</button>';
+          html += '<button type="button" data-action="retranslate" title="Переперевести" aria-label="Переперевести" class="' + (record.needs_retranslation ? 'active' : '') + '">R</button>';
+          html += '<button type="button" data-action="text" title="Перевести как текст" aria-label="Перевести как текст" class="' + (record.translate_as_text ? 'active' : '') + '">T</button>';
+          html += '<button type="button" data-action="comment" title="Комментарий" aria-label="Комментарий">C</button>';
+          html += '<button type="button" data-action="delete" title="Удалить из выравнивания" aria-label="Удалить из выравнивания">X</button>';
+          html += '</div>';
+        }
+        html += '</div>';
+        return html;
+      }
+
+      function renderBlockContent(type, text) {
+        if (type === 'h1' || type === 'h2' || type === 'h3') {
+          return '<' + type + '>' + renderInline(text) + '</' + type + '>';
+        }
+        if (type === 'blockquote') return '<blockquote>' + renderInline(text) + '</blockquote>';
+        if (type === 'li') return '<li>' + renderInline(text) + '</li>';
+        if (type === 'pre') return '<pre><code>' + escapeHtml(text) + '</code></pre>';
+        return '<p>' + renderInline(text) + '</p>';
+      }
+
+      function renderInline(text) {
+        return escapeHtml(text)
+          .replace(/`([^`]+)`/g, '<code>$1</code>')
+          .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+      }
+
+      function bindBlockClicks() {
+        document.querySelectorAll('.review-block').forEach(function (blockEl) {
+          blockEl.addEventListener('click', function (event) {
+            var id = blockEl.getAttribute('data-id');
+            var rawId = blockEl.getAttribute('data-raw-id');
+            selectParagraph(id, true);
+            var action = event.target.getAttribute('data-action');
+            if (!action) return;
+            event.preventDefault();
+            event.stopPropagation();
+            handleParagraphAction(id, action, rawId);
+          });
+        });
+      }
+
+      function handleParagraphAction(id, action, rawId) {
+        if (action === 'bad') {
+          var bad = !getParagraphRecord(id).bad_translation;
+          updateRecord(id, { bad_translation: bad });
+        }
+        if (action === 'retranslate') {
+          var retranslate = !getParagraphRecord(id).needs_retranslation;
+          updateRecord(id, { needs_retranslation: retranslate });
+        }
+        if (action === 'text') {
+          var asText = !getParagraphRecord(id).translate_as_text;
+          updateRecord(id, { translate_as_text: asText });
+        }
+        if (action === 'delete') {
+          markRuBlockDeleted(rawId);
+          selectedId = null;
+        }
+        if (action === 'comment') els.commentField.focus();
+        if (action === 'edit') els.editField.focus();
+        renderBlocks();
+        if (action !== 'delete') selectParagraph(id, false);
+        if (action === 'delete') selectFirstIssueOrParagraph();
+        renderIssueSummary();
+      }
+
+      function selectFirstIssueOrParagraph() {
+        var records = getLessonRecords(currentLessonPath);
+        var firstIssueId = Object.keys(records.paragraphs || {}).find(function (id) {
+          return recordHasIssue(records.paragraphs[id]);
+        });
+        var firstId = firstIssueId || (visibleBlocks.ru[0] && visibleBlocks.ru[0].id) || (visibleBlocks.en[0] && visibleBlocks.en[0].id);
+        if (firstId) selectParagraph(firstId, false);
+      }
+
+      function selectParagraph(id, scrollIntoView) {
+        selectedId = id;
+        document.querySelectorAll('.review-block.selected').forEach(function (el) {
+          el.classList.remove('selected');
+        });
+        document.querySelectorAll('[data-id="' + cssEscape(id) + '"]').forEach(function (el) {
+          el.classList.add('selected');
+        });
+
+        var enBlock = findBlock(visibleBlocks.en, id);
+        var ruBlock = findBlock(visibleBlocks.ru, id);
+        var record = getParagraphRecord(id);
+        els.selectedId.textContent = id;
+        els.selectedEnglish.textContent = enBlock ? enBlock.text : 'No English block for this index.';
+        els.selectedRussian.textContent = ruBlock ? ruBlock.text : 'No Russian block for this index.';
+        els.flagBad.checked = !!record.bad_translation;
+        els.flagRetranslate.checked = !!record.needs_retranslation;
+        els.commentField.value = record.comment || '';
+        els.editField.value = record.editedRuText || (ruBlock ? ruBlock.text : '');
+
+        if (scrollIntoView) {
+          var target = document.getElementById('ru-' + id) || document.getElementById('en-' + id);
+          if (target) target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        }
+      }
+
+      function findBlock(blocks, id) {
+        return blocks.find(function (block) { return block.id === id; });
+      }
+
+      function clearSelectionPanel() {
+        selectedId = null;
+        els.selectedId.textContent = 'Select a paragraph';
+        els.selectedEnglish.textContent = 'English source will appear here.';
+        els.selectedRussian.textContent = 'Russian translation will appear here.';
+        els.flagBad.checked = false;
+        els.flagRetranslate.checked = false;
+        els.commentField.value = '';
+        els.editField.value = '';
+      }
+
+      function updateSelectedRecord(patch) {
+        if (!selectedId) return;
+        updateRecord(selectedId, patch);
+        paintIssueClasses();
+        renderIssueSummary();
+      }
+
+      function updateRecord(id, patch) {
+        var lesson = getLessonRecords(currentLessonPath);
+        var current = lesson.paragraphs[id] || {};
+        var enBlock = findBlock(visibleBlocks.en, id);
+        var ruBlock = findBlock(visibleBlocks.ru, id);
+        lesson.paragraphs[id] = Object.assign({}, current, {
+          enText: current.enText || (enBlock ? enBlock.text : ''),
+          ruText: current.ruText || (ruBlock ? ruBlock.text : '')
+        }, patch, { updatedAt: new Date().toISOString() });
+        if (!recordHasIssue(lesson.paragraphs[id])) {
+          delete lesson.paragraphs[id];
+        }
+        saveState();
+      }
+
+      function updateRenderedEditedText() {
+        if (!selectedId) return;
+        var ruBlock = findBlock(visibleBlocks.ru, selectedId);
+        var ruEl = document.getElementById('ru-' + selectedId);
+        if (!ruBlock || !ruEl) return;
+        var tools = ruEl.querySelector('.paragraph-tools');
+        ruEl.innerHTML = renderBlockContent(ruBlock.type, els.editField.value);
+        if (tools) ruEl.appendChild(tools);
+      }
+
+      function markRuBlockDeleted(rawId) {
+        if (!rawId) return;
+        var lesson = getLessonRecords(currentLessonPath);
+        var rawBlock = findRawBlock(currentBlocks.ru, rawId);
+        lesson.deletedRuRawIds[rawId] = {
+          deletedAt: new Date().toISOString(),
+          text: rawBlock.text || ''
+        };
+        saveState();
+      }
+
+      function isRuBlockDeleted(rawId) {
+        var lesson = getLessonRecords(currentLessonPath);
+        return !!(rawId && lesson.deletedRuRawIds && lesson.deletedRuRawIds[rawId]);
+      }
+
+      function findRawBlock(blocks, rawId) {
+        return blocks.find(function (block) { return block.rawId === rawId; }) || {};
+      }
+
+      function getParagraphRecord(id) {
+        var lesson = getLessonRecords(currentLessonPath);
+        return lesson.paragraphs[id] || {};
+      }
+
+      function getLessonRecords(path) {
+        if (!state.lessons[path]) {
+          state.lessons[path] = { paragraphs: {}, deletedRuRawIds: {}, lastExportedAt: '' };
+        }
+        if (!state.lessons[path].paragraphs) state.lessons[path].paragraphs = {};
+        if (!state.lessons[path].deletedRuRawIds) state.lessons[path].deletedRuRawIds = {};
+        return state.lessons[path];
+      }
+
+      function recordHasIssue(record) {
+        if (!record) return false;
+        return !!(record.bad_translation || record.needs_retranslation || record.translate_as_text || trim(record.comment) || trim(record.editedRuText));
+      }
+
+      function paintIssueClasses() {
+        document.querySelectorAll('.review-block').forEach(function (el) {
+          var record = getParagraphRecord(el.getAttribute('data-id'));
+          el.classList.toggle('has-issue', recordHasIssue(record));
+        });
+      }
+
+      function renderIssueSummary() {
+        var records = getLessonRecords(currentLessonPath).paragraphs || {};
+        var ids = Object.keys(records).filter(function (id) { return recordHasIssue(records[id]); });
+        els.issueCount.textContent = ids.length + ' pending';
+        if (!ids.length) {
+          els.issueList.innerHTML = '<div class="panel-muted">No flagged paragraphs yet.</div>';
+          return;
+        }
+        els.issueList.innerHTML = ids.map(function (id) {
+          var record = records[id];
+          var ruBlock = findBlock(visibleBlocks.ru, id);
+          var flags = [];
+          if (record.bad_translation) flags.push('bad');
+          if (record.needs_retranslation) flags.push('retranslate');
+          if (record.translate_as_text) flags.push('text');
+          if (record.comment) flags.push('comment');
+          if (record.editedRuText) flags.push('edit');
+          return '<button type="button" class="issue-item" data-id="' + escapeAttr(id) + '">' +
+            '<strong>' + escapeHtml(id) + '</strong> · ' + escapeHtml(flags.join(', ')) +
+            '<br>' + escapeHtml(truncate((record.comment || (ruBlock && ruBlock.text) || ''), 90)) +
+            '</button>';
+        }).join('');
+        els.issueList.querySelectorAll('.issue-item').forEach(function (button) {
+          button.addEventListener('click', function () {
+            selectParagraph(button.getAttribute('data-id'), true);
+          });
+        });
+      }
+
+      function buildReviewExport(lessonPath) {
+        var lesson = findLesson(lessonPath) || currentLesson;
+        var records = getLessonRecords(lessonPath).paragraphs || {};
+        var paragraphs = Object.keys(records).filter(function (id) {
+          return recordHasIssue(records[id]);
+        }).map(function (id) {
+          var record = records[id];
+          var enBlock = findBlock(visibleBlocks.en, id);
+          var ruBlock = findBlock(visibleBlocks.ru, id);
+          return {
+            id: id,
+            index: parseInt(id.replace('p-', ''), 10),
+            enText: enBlock ? enBlock.text : '',
+            ruText: ruBlock ? ruBlock.text : '',
+            editedRuText: record.editedRuText || '',
+            flags: {
+              bad_translation: !!record.bad_translation,
+              needs_retranslation: !!record.needs_retranslation,
+              translate_as_text: !!record.translate_as_text
+            },
+            comment: record.comment || ''
+          };
+        });
+
+        return {
+          schemaVersion: 1,
+          lessonPath: lessonPath,
+          lessonTitle: lesson ? lesson.name : '',
+          source: {
+            en: lessonPath + '/docs/en.md',
+            ru: lessonPath + '/docs/ru.md'
+          },
+          targetPath: buildTargetPath(lessonPath),
+          exportedAt: new Date().toISOString(),
+          paragraphs: paragraphs,
+          deletedRuBlocks: buildDeletedRuBlocks(lessonPath)
+        };
+      }
+
+      window.buildReviewExport = buildReviewExport;
+
+      function buildAllPendingExport() {
+        var lessonPaths = Object.keys(state.lessons || {}).filter(function (path) {
+          var records = state.lessons[path].paragraphs || {};
+          var deleted = state.lessons[path].deletedRuRawIds || {};
+          return Object.keys(records).some(function (id) { return recordHasIssue(records[id]); }) || Object.keys(deleted).length > 0;
+        });
+        return {
+          schemaVersion: 1,
+          exportedAt: new Date().toISOString(),
+          lessons: lessonPaths.map(function (path) {
+            if (path === currentLessonPath) return buildReviewExport(path);
+            return buildStoredLessonExport(path);
+          })
+        };
+      }
+
+      function buildStoredLessonExport(lessonPath) {
+        var records = getLessonRecords(lessonPath).paragraphs || {};
+        var lesson = findLesson(lessonPath);
+        return {
+          schemaVersion: 1,
+          lessonPath: lessonPath,
+          lessonTitle: lesson ? lesson.name : '',
+          source: {
+            en: lessonPath + '/docs/en.md',
+            ru: lessonPath + '/docs/ru.md'
+          },
+          targetPath: buildTargetPath(lessonPath),
+          exportedAt: new Date().toISOString(),
+          paragraphs: Object.keys(records).filter(function (id) {
+            return recordHasIssue(records[id]);
+          }).map(function (id) {
+            var record = records[id];
+            return {
+              id: id,
+              index: parseInt(id.replace('p-', ''), 10),
+              enText: record.enText || '',
+              ruText: record.ruText || '',
+              editedRuText: record.editedRuText || '',
+              flags: {
+                bad_translation: !!record.bad_translation,
+                needs_retranslation: !!record.needs_retranslation,
+                translate_as_text: !!record.translate_as_text
+              },
+              comment: record.comment || ''
+            };
+          }),
+          deletedRuBlocks: buildDeletedRuBlocks(lessonPath)
+        };
+      }
+
+      function buildDeletedRuBlocks(lessonPath) {
+        var deleted = getLessonRecords(lessonPath).deletedRuRawIds || {};
+        return Object.keys(deleted).map(function (rawId) {
+          return {
+            rawId: rawId,
+            text: deleted[rawId].text || '',
+            deletedAt: deleted[rawId].deletedAt || ''
+          };
+        });
+      }
+
+      function buildTargetPath(lessonPath) {
+        var parts = lessonPath.split('/');
+        return 'outputs/review/' + parts.slice(1).join('/') + '.review.json';
+      }
+
+      function buildLessonExportName(lessonPath) {
+        var parts = lessonPath.split('/');
+        var slug = parts[parts.length - 1] || 'lesson';
+        return slug + '.review.' + timestampForFile() + '.json';
+      }
+
+      function timestampForFile() {
+        return new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
+      }
+
+      function downloadJson(data, filename) {
+        var json = JSON.stringify(data, null, 2);
+        var blob = new Blob([json], { type: 'application/json' });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      function markExported(path) {
+        getLessonRecords(path).lastExportedAt = new Date().toISOString();
+        saveState();
+      }
+
+      function loadState() {
+        try {
+          var raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return { lessons: {} };
+          var parsed = JSON.parse(raw);
+          if (!parsed.lessons) parsed.lessons = {};
+          return parsed;
+        } catch (error) {
+          return { lessons: {} };
+        }
+      }
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } catch (error) {
+          els.lessonMeta.textContent = 'Local storage unavailable; refresh will lose current review state';
+        }
+      }
+
+      function updateActiveLessonLink() {
+        document.querySelectorAll('.reviewer-lesson-link').forEach(function (link) {
+          link.classList.toggle('active', link.getAttribute('data-path') === currentLessonPath);
+        });
+      }
+
+      function showFatal(message) {
+        els.lessonTitle.textContent = 'Reviewer error';
+        els.lessonMeta.textContent = message;
+        els.englishContent.innerHTML = '<p>' + escapeHtml(message) + '</p>';
+        els.russianContent.innerHTML = '<p>' + escapeHtml(message) + '</p>';
+      }
+
+      function pad2(value) {
+        return String(value).padStart(2, '0');
+      }
+
+      function trim(value) {
+        return String(value || '').trim();
+      }
+
+      function truncate(value, max) {
+        value = String(value || '').replace(/\s+/g, ' ').trim();
+        return value.length > max ? value.slice(0, max - 1) + '...' : value;
+      }
+
+      function cssEscape(value) {
+        if (window.CSS && CSS.escape) return CSS.escape(value);
+        return String(value).replace(/"/g, '\\"');
+      }
+
+      function escapeHtml(value) {
+        var div = document.createElement('div');
+        div.textContent = value == null ? '' : String(value);
+        return div.innerHTML;
+      }
+
+      function escapeAttr(value) {
+        return String(value == null ? '' : value)
+          .replace(/&/g, '&amp;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+      }
+    })();
+  </script>
+</body>
+</html>
