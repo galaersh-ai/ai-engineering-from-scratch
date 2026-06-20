@@ -197,6 +197,35 @@
 | weight decay | снижение весов / weight decay | |
 | workflow | воркфлоу / рабочий процесс | |
 
+## Autonomous Systems (Phase 15)
+
+| Английский | Русский | Примечание |
+|-----------|---------|------------|
+| long-horizon agent | долгосрочный агент | |
+| time horizon | временной горизонт | |
+| kill switch | аварийный выключатель | |
+| canary token | канареечный токен | |
+| eval-context gaming | подыгрывание в контексте оценки | |
+| alignment faking | симуляция согласованности | |
+| trajectory | траектория | |
+| reward hacking | взлом вознаграждения | |
+| drift | дрейф | |
+| HITL (Human In The Loop) | человек в цикле / HITL | |
+| capability ceiling | потолок возможностей | |
+| reliability floor | минимальная надёжность | |
+| observation | наблюдение | в контексте observability |
+| observability | наблюдаемость | |
+| checkpoint | чекпоинт | |
+| double | удваиваться | о времени удвоения |
+| frontier model | передовая модель | |
+| deployment | развёртывание | |
+| reasoning trace | след рассуждения | |
+| tool output | результат инструмента | |
+| autonomous | автономный | |
+| loop | цикл | |
+| stateful | сохраняющий состояние | |
+| stateless | не сохраняющий состояние | |
+
 ---
 
 ## Правила перевода терминов
