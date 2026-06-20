@@ -226,6 +226,59 @@
 | stateful | сохраняющий состояние | |
 | stateless | не сохраняющий состояние | |
 
+## Multi-Agent Systems (Phase 16)
+
+| Английский | Русский | Примечание |
+|-----------|---------|------------|
+| multi-agent system (MAS) | мультиагентная система (MAS) | |
+| swarm | рой / swarm | |
+| FIPA-ACL | FIPA-ACL | Foundation for Intelligent Physical Agents — Agent Communication Language, без перевода |
+| performative | перформатив | речевой акт в ACL |
+| Contract Net Protocol (CNP) | протокол контрактной сети (CNP) | |
+| speech act | речевой акт | |
+| ontology | онтология | |
+| multi-agent debate | мультиагентный дебат | |
+| orchestration | оркестрация | |
+| orchestrator | оркестратор | |
+| supervisor | супервайзер | |
+| worker | рабочий агент / worker | |
+| handoff | передача (handoff) | |
+| A2A (Agent-to-Agent) | A2A (Agent-to-Agent) | протокол Google, без перевода |
+| MCP (Model Context Protocol) | MCP | протокол Anthropic, без перевода |
+| blackboard | доска объявлений / blackboard | |
+| consensus | консенсус | |
+| BFT (Byzantine Fault Tolerance) | BFT (византийская отказоустойчивость) | |
+| voting | голосование | |
+| self-consistency | самосогласованность | |
+| debate topology | топология дебатов | |
+| negotiation | переговоры | |
+| bargaining | торг | |
+| Generative Agents | генеративные агенты | |
+| Theory of Mind | модель психического (Theory of Mind) | |
+| PSO (Particle Swarm Optimization) | PSO (оптимизация роем частиц) | |
+| ACO (Ant Colony Optimization) | ACO (оптимизация муравьиной колонией) | |
+| MARL (Multi-Agent Reinforcement Learning) | MARL (мультиагентное обучение с подкреплением) | |
+| MADDPG | MADDPG | алгоритм MARL, без перевода |
+| QMIX | QMIX | алгоритм MARL, без перевода |
+| MAPPO | MAPPO | алгоритм MARL, без перевода |
+| CTDE (Centralized Training Decentralized Execution) | CTDE (централизованное обучение, децентрализованное выполнение) | |
+| agent economy | экономика агентов / agent economy | |
+| token incentives | токен-стимулы | |
+| reputation | репутация | |
+| scaling | масштабирование | |
+| queue | очередь | |
+| checkpoint (agent) | чекпоинт агента | сохранение состояния агента |
+| MAST (Multi-Agent Safety Taxonomy) | MAST (таксономия безопасности мультиагентных систем) | |
+| groupthink | групповое мышление / groupthink | |
+| monoculture | монокультура | |
+| cascading failure | каскадный отказ | |
+| emergent behaviour | эмерджентное поведение | |
+| Society of Mind | общество разума (Society of Mind) | Минский |
+| role specialization | ролевая специализация | planner, critic, executor, verifier |
+| speaker selection | выбор выступающего | в групповом чате |
+| stateless orchestration | оркестрация без состояния | |
+| hierarchical architecture | иерархическая архитектура | |
+
 ---
 
 ## Правила перевода терминов
