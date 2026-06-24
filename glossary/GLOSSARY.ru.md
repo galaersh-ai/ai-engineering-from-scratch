@@ -279,6 +279,109 @@
 | stateless orchestration | оркестрация без состояния | |
 | hierarchical architecture | иерархическая архитектура | |
 
+## Infrastructure & Production (Phase 17)
+
+| Английский | Русский | Примечание |
+|-----------|---------|------------|
+| inference | инференс | НЕ «вывод» |
+| serving | обслуживание / serving | контекстно |
+| autoscaling | автобалансировка / масштабирование | |
+| Kubernetes | Kubernetes | не переводится |
+| vLLM | vLLM | не переводится |
+| speculative decoding | спекулятивный декодинг | |
+| prefill | префил / предзаполнение | |
+| decode | декод | |
+| quantization | квантизация | |
+| cold start | холодный старт | |
+| edge inference | edge-инференс / инференс на периферии | |
+| observability | наблюдаемость | |
+| semantic caching | семантическое кэширование | |
+| batch API | пакетный API | |
+| model routing | маршрутизация моделей | |
+| AI gateway | AI-шлюз / AI gateway | |
+| canary deployment | канареечное развёртывание | |
+| shadow deployment | теневое развёртывание | |
+| load testing | нагрузочное тестирование | |
+| SRE (Site Reliability Engineering) | SRE / надёжность сервисов | |
+| chaos engineering | хаос-инженерия | |
+| FinOps | FinOps | не переводится |
+| goodput | полезная пропускная способность / goodput | |
+| KV cache | KV-кэш | |
+| radix attention | radix-внимание | |
+| tensor parallelism | тензорная параллелизация | |
+| pipeline parallelism | конвейерная параллелизация | |
+| PTU (Provisioned Throughput Unit) | PTU (единица выделенной пропускной способности) | |
+| disaggregated serving | раздельное обслуживание | |
+| prompt caching | кэширование промптов | |
+
+## Ethics, Safety & Alignment (Phase 18)
+
+| Английский | Русский | Примечание |
+|-----------|---------|------------|
+| alignment | alignment / выравнивание | контекстно: safety alignment → alignment |
+| RLHF | RLHF | не переводится |
+| reward model | модель вознаграждения | |
+| reward hacking | взлом вознаграждения / reward hacking | |
+| Goodhart's Law | закон Гудхарта | |
+| DPO (Direct Preference Optimization) | DPO (оптимизация прямых предпочтений) | |
+| PPO (Proximal Policy Optimization) | PPO | не переводится |
+| sycophancy | льстивость / подхалимство | |
+| constitutional AI | конституционный AI | |
+| RLAIF | RLAIF | не переводится |
+| deceptive alignment | обманчивое выравнивание | |
+| sleeper agent | агент-самозванец / спящий агент | |
+| alignment faking | симуляция согласованности / alignment faking | |
+| jailbreaking | джейлбрейк / обход ограничений | |
+| prompt injection | инъекция промпта | |
+| red teaming |.red teaming / тестирование на проникновение | |
+| bias | предвзятость / смещение | контекстно |
+| differential privacy | дифференциальная приватность | |
+| watermarking | водяной знак / маркировка | |
+| model card | карточка модели | |
+| dataset card | карточка датасета | |
+| data provenance | происхождение данных | |
+| dual-use | двойного назначения | |
+| oversight | надзор / контроль | |
+| scalable oversight | масштабируемый надзор | |
+| mesa-optimization | меза-оптимизация | |
+| frontier model | передовая модель | |
+| safety policy | политика безопасности | |
+| moderation | модерация | |
+| representational harm | репрезентационный вред | |
+| fairness | справедливость | |
+| WMDP | WMDP | не переводится |
+| C2PA | C2PA | не переводится |
+
+## Capstone Projects (Phase 19)
+
+| Английский | Русский | Примечание |
+|-----------|---------|------------|
+| capstone | выпускной проект / capstone | |
+| coding agent | кодирующий агент / coding agent | |
+| harness | обвязка / harness | |
+| sandbox | песочница / sandbox | |
+| devcontainer | devcontainer | не переводится |
+| E2B | E2B | не переводится |
+| Daytona | Daytona | не переводится |
+| eval harness | eval-обвязка | |
+| MCP (Model Context Protocol) | MCP | не переводится |
+| function calling | вызов функций / function calling | |
+| structured output | структурированный вывод | |
+| OpenTelemetry | OpenTelemetry | не переводится |
+| Langfuse | Langfuse | не переводится |
+| SWE-bench | SWE-bench | не переводится |
+| RAG chatbot | RAG-чатбот | |
+| observability dashboard | панель наблюдаемости | |
+| voice assistant | голосовой ассистент | |
+| document QA | вопрос-ответ по документам | |
+| research agent | исследовательский агент | |
+| fine-tuning pipeline | пайплайн файнтюнинга | |
+| issue-to-PR | issue-to-PR / от задачи к PR | |
+| tutor | репетитор / tutor | |
+| plan-execute | plan-execute / планирование-выполнение | |
+| verification gate | верификационный шлюз / verification gate | |
+| denylist | список запретов / denylist | |
+
 ---
 
 ## Правила перевода терминов
