@@ -1559,6 +1559,250 @@
       .timeline-item { min-width: 70px; }
       .timeline-line { width: 20px; }
     }
+
+    /* ── Parallel mode (en + ru side-by-side) ── */
+    .parallel-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 0 20px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--rule-soft);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+    }
+    .parallel-header .lang-badge {
+      padding: 3px 10px;
+      border-radius: 4px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .parallel-header .lang-badge.en { background: #e8f0fe; color: #1a56db; }
+    .parallel-header .lang-badge.ru { background: #fce8e8; color: #b91c1c; }
+    .parallel-header .sync-label {
+      margin-left: auto;
+      color: var(--ink-mute);
+      font-size: 0.72rem;
+    }
+
+    /* Sync toggle button in header */
+    .sync-toggle {
+      background: transparent;
+      border: 1px solid var(--rule-soft);
+      height: 36px;
+      padding: 0 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink);
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .sync-toggle:hover {
+      border-color: var(--blueprint);
+      color: var(--blueprint);
+    }
+    .sync-toggle.active {
+      background: var(--blueprint);
+      color: #fff;
+      border-color: var(--blueprint);
+    }
+    .sync-toggle.active:hover {
+      opacity: 0.85;
+      color: #fff;
+    }
+    .sync-icon {
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+
+    /* Parallel view toggle button */
+    .parallel-btn {
+      background: transparent;
+      border: 1px solid var(--rule-soft);
+      height: 36px;
+      padding: 0 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--ink);
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+    }
+    .parallel-btn:hover {
+      border-color: var(--blueprint);
+      color: var(--blueprint);
+    }
+    .parallel-btn.active {
+      background: var(--blueprint);
+      color: #fff;
+      border-color: var(--blueprint);
+    }
+    .parallel-btn.active:hover {
+      opacity: 0.85;
+      color: #fff;
+    }
+    .parallel-btn-icon {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .parallel-wrapper {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      width: 100%;
+      max-width: 100%;
+      height: calc(100vh - 64px);
+      overflow: hidden;
+    }
+    .parallel-wrapper .parallel-col {
+      overflow-y: auto;
+      padding: 40px 48px 96px;
+      scroll-behavior: smooth;
+    }
+    .parallel-wrapper .parallel-col::-webkit-scrollbar { width: 5px; }
+    .parallel-wrapper .parallel-col::-webkit-scrollbar-thumb { background: var(--rule-soft); border-radius: 3px; }
+    .parallel-wrapper .parallel-col:first-child {
+      border-right: 1px solid var(--rule-soft);
+    }
+    .parallel-wrapper .parallel-col .lesson-article {
+      max-width: 100%;
+    }
+
+    .parallel-toolbar {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 0;
+      margin-bottom: 12px;
+    }
+    .parallel-toolbar.active { display: flex; }
+    .parallel-toolbar button {
+      background: var(--bg-surface);
+      border: 1px solid var(--rule-soft);
+      padding: 4px 12px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      cursor: pointer;
+      color: var(--ink);
+      transition: border-color 0.15s;
+    }
+    .parallel-toolbar button:hover { border-color: var(--blueprint); color: var(--blueprint); }
+    .parallel-toolbar button.active-sync {
+      background: var(--blueprint);
+      color: #fff;
+      border-color: var(--blueprint);
+    }
+
+    body.parallel-mode .lesson-main {
+      margin-left: 0;
+      padding: 0;
+      max-width: none;
+    }
+    body.parallel-mode .lesson-layout {
+      display: block;
+    }
+    body.parallel-mode .lesson-sidebar {
+      display: none;
+    }
+    body.parallel-mode .toc-sidebar {
+      display: none;
+    }
+    body.parallel-mode .lesson-sidebar-toggle {
+      display: none;
+    }
+
+    /* Parallel TOC panel (right side) */
+    .parallel-toc {
+      position: fixed;
+      top: 64px;
+      right: 0;
+      bottom: 0;
+      width: 200px;
+      background: var(--bg);
+      border-left: 1px solid var(--rule-soft);
+      overflow-y: auto;
+      z-index: 50;
+      padding: 28px 16px 80px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--rule-soft) transparent;
+    }
+    .parallel-toc::-webkit-scrollbar { width: 3px; }
+    .parallel-toc::-webkit-scrollbar-thumb { background: var(--rule-soft); }
+    .parallel-toc-header {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      color: var(--blueprint);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      margin-bottom: 14px;
+    }
+    .parallel-toc-nav {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border-left: 1px solid var(--rule-soft);
+    }
+    .parallel-toc-item {
+      line-height: 1.3;
+    }
+    .parallel-toc-link {
+      font-family: var(--font-body);
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+      text-decoration: none;
+      display: block;
+      padding: 4px 0 4px 12px;
+      border-left: 2px solid transparent;
+      margin-left: -1px;
+      transition: color 0.15s, border-color 0.15s;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .parallel-toc-link:hover {
+      color: var(--ink);
+    }
+    .parallel-toc-link.active {
+      color: var(--blueprint);
+      border-left-color: var(--blueprint);
+      font-weight: 500;
+    }
+    .parallel-toc-item.toc-h3 .parallel-toc-link {
+      padding-left: 24px;
+      font-size: 0.72rem;
+    }
+
+    /* Shrink main area to make room for parallel TOC */
+    body.parallel-mode .parallel-wrapper {
+      margin-right: 200px;
+    }
+
+    @media (max-width: 900px) {
+      .parallel-toc { display: none !important; }
+      body.parallel-mode .parallel-wrapper { margin-right: 0; }
+      .parallel-wrapper {
+        grid-template-columns: 1fr;
+        height: auto;
+      }
+      .parallel-wrapper .parallel-col {
+        height: auto;
+        max-height: none;
+        overflow: visible;
+        padding: 20px 16px 60px;
+        border-right: none;
+      }
+      .parallel-wrapper .parallel-col + .parallel-col {
+        border-top: 2px solid var(--rule-soft);
+      }
+    }
   </style>
 </head>
 <body>
@@ -1595,6 +1839,14 @@
       <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" type="button">
         <span class="theme-icon" id="themeIcon">N</span>
       </button>
+      <button class="parallel-btn" id="parallelBtn" aria-label="Toggle parallel view" type="button">
+        <span class="parallel-btn-icon">⫏</span>
+        <span class="parallel-btn-label" id="parallelBtnLabel">Parallel</span>
+      </button>
+      <button class="sync-toggle" id="syncToggle" aria-label="Toggle sync scroll" type="button" style="display:none;">
+        <span class="sync-icon" id="syncIcon">🔗</span>
+        <span class="sync-label" id="syncLabel">Sync</span>
+      </button>
     </div>
   </header>
 
@@ -1622,6 +1874,31 @@
         </div>
       </div>
     </main>
+
+    <!-- Parallel mode container (hidden by default) -->
+    <div class="parallel-wrapper" id="parallelWrapper" style="display:none;">
+      <div class="parallel-col" id="parallelEn">
+        <div class="parallel-header">
+          <span class="lang-badge en">EN</span>
+          <span class="sync-label">English original</span>
+        </div>
+        <div class="parallel-toolbar" id="toolbarEn"></div>
+        <div class="lesson-article" id="parallelEnContent"></div>
+      </div>
+      <div class="parallel-col" id="parallelRu">
+        <div class="parallel-header">
+          <span class="lang-badge ru">RU</span>
+          <span class="sync-label">Русский перевод</span>
+        </div>
+        <div class="parallel-toolbar" id="toolbarRu"></div>
+        <div class="lesson-article" id="parallelRuContent"></div>
+      </div>
+    </div>
+    <!-- Parallel mode TOC (right side) -->
+    <nav class="parallel-toc" id="parallelToc" aria-label="Section navigation" style="display:none;">
+      <div class="parallel-toc-header">On this page</div>
+      <ul class="parallel-toc-nav" id="parallelTocNav"></ul>
+    </nav>
     <aside class="toc-sidebar" id="tocSidebar" aria-hidden="true"></aside>
   </div>
 
@@ -1682,11 +1959,58 @@
 
       var params = new URLSearchParams(window.location.search);
       var lessonPath = params.get('path');
+      var viewMode = params.get('mode') || 'single';
+      var isParallel = viewMode === 'parallel';
 
       if (!lessonPath) {
         showError('No lesson path specified', 'Add ?path=phases/01-math-foundations/01-linear-algebra-intuition to the URL.');
         return;
       }
+
+      /* Parallel view toggle button */
+      var parallelBtn = document.getElementById('parallelBtn');
+      if (parallelBtn) {
+        if (isParallel) {
+          parallelBtn.classList.add('active');
+          var pLabel = document.getElementById('parallelBtnLabel');
+          if (pLabel) pLabel.textContent = 'Single';
+        }
+        parallelBtn.addEventListener('click', function () {
+          var url = new URL(window.location.href);
+          if (isParallel) {
+            url.searchParams.delete('mode');
+          } else {
+            url.searchParams.set('mode', 'parallel');
+          }
+          window.location.href = url.toString();
+        });
+      }
+
+      /* Activate parallel-mode CSS overrides */
+      if (isParallel) {
+        document.body.classList.add('parallel-mode');
+
+        /* Show sync toggle button */
+        var syncBtn = document.getElementById('syncToggle');
+        if (syncBtn) {
+          syncBtn.style.display = '';
+          syncBtn.classList.add('active'); /* ON by default */
+          syncBtn.addEventListener('click', function () {
+            var isActive = syncBtn.classList.toggle('active');
+            var icon = document.getElementById('syncIcon');
+            var label = document.getElementById('syncLabel');
+            if (icon) icon.textContent = isActive ? '🔗' : '🔓';
+            if (label) label.textContent = isActive ? 'Sync' : 'Free';
+            syncScrollEnabled = isActive;
+            /* When re-enabling sync, immediately sync to the column that's further ahead */
+            if (isActive && typeof window._forceSyncNow === 'function') {
+              window._forceSyncNow();
+            }
+          });
+        }
+      }
+
+      var syncScrollEnabled = isParallel;
 
       if (window.AIFSProgress) {
         window.AIFSProgress.recordVisit(lessonPath);
@@ -1834,35 +2158,395 @@
         }, { passive: true });
       }
 
-      function fetchLesson(path) {
-        var rawUrl = 'https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/' + path + '/docs/en.md';
-        var quizUrl = 'https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/' + path + '/quiz.json';
+      /**
+       * Try fetching from multiple URLs (local first, then GitHub).
+       * Returns the first successful Response.
+       */
+      function fetchWithFallback(urls) {
+        return urls.reduce(function (chain, url) {
+          return chain.catch(function () {
+            return fetch(url).then(function (r) {
+              if (!r.ok) throw new Error('not-ok');
+              return r;
+            });
+          });
+        }, Promise.reject(new Error('start')));
+      }
 
-        fetch(rawUrl)
-          .then(function (res) {
-            if (!res.ok) throw new Error('fetch-failed');
-            return res.text();
-          })
-          .then(function (md) {
-            try {
-              renderLesson(md);
-            } catch (err) {
-              console.error('renderLesson failed', err);
-              showError('Render error', 'Loaded the lesson markdown but failed to render it. Details in the browser console.');
-              return;
+      function fetchLesson(path) {
+        var ghBase = 'https://raw.githubusercontent.com/rohitg00/ai-engineering-from-scratch/main/';
+        var localBase = '../';
+        var enUrls = [localBase + path + '/docs/en.md', ghBase + path + '/docs/en.md'];
+        var ruUrls = [localBase + path + '/docs/ru.md', ghBase + path + '/docs/ru.md'];
+        var quizUrls = [localBase + path + '/quiz.json', ghBase + path + '/quiz.json'];
+
+        if (isParallel) {
+          /* ── Parallel mode: fetch en + ru, render side-by-side ── */
+          Promise.all([
+            fetchWithFallback(enUrls).then(function (r) { return r.text(); }),
+            fetchWithFallback(ruUrls).then(function (r) { return r.text(); }).catch(function () { return null; })
+          ]).then(function (results) {
+            var enMd = results[0];
+            var ruMd = results[1];
+
+            /* Switch layout: hide single-view, show parallel wrapper */
+            var singleView = document.getElementById('lessonContent');
+            if (singleView) singleView.style.display = 'none';
+            var wrapper = document.getElementById('parallelWrapper');
+            if (wrapper) wrapper.style.display = '';
+
+            /* Render English column */
+            var enCol = document.getElementById('parallelEnContent');
+            if (enCol) {
+              enCol.innerHTML = parseMd(enMd);
             }
-            fetch(quizUrl)
-              .then(function (res) { return res.ok ? res.json() : null; })
+
+            /* Render Russian column */
+            var ruCol = document.getElementById('parallelRuContent');
+            if (ruCol) {
+              if (ruMd) {
+                ruCol.innerHTML = parseMd(ruMd);
+              } else {
+                ruCol.innerHTML = '<div class="lesson-error"><h2>Перевод недоступен</h2><p>Russian version not yet available for this lesson.</p></div>';
+              }
+            }
+
+            /* Re-init code-copy buttons and mermaid for the entire document (both cols) */
+            initCodeCopy();
+            if (typeof rerenderMermaidBlocks === 'function') {
+              rerenderMermaidBlocks();
+            }
+
+            /* Set page title */
+            var title = extractTitle(enMd);
+            document.title = title + ' — Parallel View — AI Engineering from Scratch';
+
+            /* Sync scrolling between columns */
+            setupSyncScroll();
+
+            /* Build parallel TOC navigation */
+            buildParallelTOC();
+
+            /* Render quiz if available */
+            fetchWithFallback(quizUrls)
+              .then(function (res) { return res.json(); })
               .catch(function () { return null; })
               .then(function (data) {
                 if (!data) return;
-                try { renderQuiz(data); }
-                catch (err) { console.error('renderQuiz failed', err); }
+                try { renderQuiz(data); } catch (err) { console.error('renderQuiz failed', err); }
               });
-          })
-          .catch(function () {
-            showError('Lesson not found', 'Could not fetch the lesson at <code>' + escapeHtml(path) + '</code>. It may not have been written yet.');
+          }).catch(function (err) {
+            console.error('Parallel fetch failed', err);
+            showError('Lesson not found', 'Could not fetch the lesson at <code>' + escapeHtml(path) + '</code>.');
           });
+        } else {
+          /* ── Single mode (original behavior) ── */
+          fetchWithFallback(enUrls)
+            .then(function (res) { return res.text(); })
+            .then(function (md) {
+              try {
+                renderLesson(md);
+              } catch (err) {
+                console.error('renderLesson failed', err);
+                showError('Render error', 'Loaded the lesson markdown but failed to render it. Details in the browser console.');
+                return;
+              }
+              fetchWithFallback(quizUrls)
+                .then(function (res) { return res.json(); })
+                .catch(function () { return null; })
+                .then(function (data) {
+                  if (!data) return;
+                  try { renderQuiz(data); }
+                  catch (err) { console.error('renderQuiz failed', err); }
+                });
+            })
+            .catch(function () {
+              showError('Lesson not found', 'Could not fetch the lesson at <code>' + escapeHtml(path) + '</code>. It may not have been written yet.');
+            });
+        }
+      }
+
+      /* ── Shared helpers for parallel mode ── */
+
+      /** Distance of element's top from scroll container's top */
+      function getTopWithin(el, container) {
+        var elRect = el.getBoundingClientRect();
+        var cRect = container.getBoundingClientRect();
+        return elRect.top - cRect.top + container.scrollTop;
+      }
+
+      /** Find the last heading whose top is above the viewport trigger line */
+      function findActiveHeading(heads, col) {
+        var colRect = col.getBoundingClientRect();
+        var trigger = colRect.top + colRect.height * 0.3;
+        var active = null;
+        for (var i = 0; i < heads.length; i++) {
+          var hRect = heads[i].el.getBoundingClientRect();
+          if (hRect.top <= trigger) active = heads[i];
+          else break;
+        }
+        return active;
+      }
+
+      function setupSyncScroll() {
+        var colEn = document.getElementById('parallelEn');
+        var colRu = document.getElementById('parallelRu');
+        if (!colEn || !colRu) return;
+
+        var articleEn = colEn.querySelector('.lesson-article');
+        var articleRu = colRu.querySelector('.lesson-article');
+        if (!articleEn || !articleRu) return;
+
+        /*
+         * Match headings by shared "anchor words" — tokens that appear
+         * in both EN and RU versions (proper nouns, codes, numbers).
+         * Falls back to ordinal index when no anchor match is found.
+         */
+        function extractWords(text) {
+          return (text || '').toLowerCase()
+            .replace(/[^a-z0-9\s]/g, ' ')
+            .split(/\s+/)
+            .filter(function (w) { return w.length >= 2; });
+        }
+
+        function sharedWords(wordsA, wordsB) {
+          var setB = {};
+          wordsB.forEach(function (w) { setB[w] = true; });
+          return wordsA.filter(function (w) { return setB[w]; });
+        }
+
+        function collectHeadings(article) {
+          var heads = article.querySelectorAll('h2, h3');
+          var result = [];
+          for (var i = 0; i < heads.length; i++) {
+            var words = extractWords(heads[i].textContent);
+            result.push({
+              el: heads[i],
+              tag: heads[i].tagName,
+              idx: i,
+              words: words,
+              anchorKey: words.slice(0, 4).join(' ') /* first 4 words as key */
+            });
+          }
+          return result;
+        }
+
+        var headsEn = collectHeadings(articleEn);
+        var headsRu = collectHeadings(articleRu);
+
+        if (!headsEn.length || !headsRu.length) return;
+
+        /* Precompute match map: for each EN heading, find best RU match */
+        function buildMatchMap(srcHeads, tgtHeads) {
+          var map = [];
+          for (var i = 0; i < srcHeads.length; i++) {
+            var src = srcHeads[i];
+            var bestMatch = -1;
+            var bestScore = 0;
+
+            for (var j = 0; j < tgtHeads.length; j++) {
+              if (tgtHeads[j].tag !== src.tag) continue;
+              var shared = sharedWords(src.words, tgtHeads[j].words);
+              var score = shared.length;
+              /* Bonus for matching at the start of the heading */
+              if (shared.length > 0 && src.words.indexOf(shared[0]) <= 1) {
+                score += 0.5;
+              }
+              if (score > bestScore) {
+                bestScore = score;
+                bestMatch = j;
+              }
+            }
+
+            /* If no shared words, fall back to same ordinal index */
+            if (bestScore === 0 && i < tgtHeads.length && tgtHeads[i].tag === src.tag) {
+              bestMatch = i;
+            }
+
+            map.push(bestMatch);
+          }
+          return map;
+        }
+
+        var enToRu = buildMatchMap(headsEn, headsRu);
+        var ruToEn = buildMatchMap(headsRu, headsEn);
+
+        var syncing = false;
+
+        function sync(source, target, srcHeads, tgtHeads, matchMap) {
+          if (!syncScrollEnabled || syncing) return;
+          syncing = true;
+
+          var active = findActiveHeading(srcHeads, source);
+          if (active) {
+            var tgtIdx = matchMap[active.idx];
+            if (tgtIdx >= 0 && tgtIdx < tgtHeads.length) {
+              var targetTop = getTopWithin(tgtHeads[tgtIdx].el, target);
+              target.scrollTo({ top: targetTop - 24, behavior: 'smooth' });
+            }
+          }
+
+          setTimeout(function () { syncing = false; }, 350);
+        }
+
+        colEn.addEventListener('scroll', function () {
+          sync(colEn, colRu, headsEn, headsRu, enToRu);
+        }, { passive: true });
+
+        colRu.addEventListener('scroll', function () {
+          sync(colRu, colEn, headsRu, headsEn, ruToEn);
+        }, { passive: true });
+
+        /**
+         * forceSyncNow: called when Sync button is re-enabled.
+         * Compares scroll progress of both columns and syncs the
+         * lagging one to match the column that's further ahead.
+         */
+        function forceSyncNow() {
+          var maxEn = colEn.scrollHeight - colEn.clientHeight;
+          var maxRu = colRu.scrollHeight - colRu.clientHeight;
+          if (maxEn <= 0 && maxRu <= 0) return;
+
+          var pctEn = maxEn > 0 ? colEn.scrollTop / maxEn : 0;
+          var pctRu = maxRu > 0 ? colRu.scrollTop / maxRu : 0;
+
+          /* Determine which column is further ahead */
+          var ahead, lagging, aheadHeads, laggingHeads, aheadCol, laggingCol, mapAheadToLag;
+          if (pctEn >= pctRu) {
+            ahead = 'en'; aheadCol = colEn; laggingCol = colRu;
+            aheadHeads = headsEn; laggingHeads = headsRu; mapAheadToLag = enToRu;
+          } else {
+            ahead = 'ru'; aheadCol = colRu; laggingCol = colEn;
+            aheadHeads = headsRu; laggingHeads = headsEn; mapAheadToLag = ruToEn;
+          }
+
+          /* Find the active heading in the ahead column */
+          var active = findActiveHeading(aheadHeads, aheadCol);
+          if (!active) return;
+
+          var tgtIdx = mapAheadToLag[active.idx];
+          if (tgtIdx >= 0 && tgtIdx < laggingHeads.length) {
+            var targetTop = getTopWithin(laggingHeads[tgtIdx].el, laggingCol);
+            laggingCol.scrollTo({ top: targetTop - 24, behavior: 'smooth' });
+          }
+        }
+
+        /* Expose for the Sync button click handler */
+        window._forceSyncNow = forceSyncNow;
+      }
+
+      /**
+       * buildParallelTOC: builds a mini TOC from EN column headings (h2, h3)
+       * and highlights the active section on scroll.
+       */
+      function buildParallelTOC() {
+        var tocPanel = document.getElementById('parallelToc');
+        var tocNav = document.getElementById('parallelTocNav');
+        var colEn = document.getElementById('parallelEn');
+        if (!tocPanel || !tocNav || !colEn) return;
+
+        var article = colEn.querySelector('.lesson-article');
+        if (!article) return;
+
+        var headings = article.querySelectorAll('h2, h3');
+        if (!headings.length) {
+          tocPanel.style.display = 'none';
+          return;
+        }
+
+        tocPanel.style.display = '';
+
+        /* Ensure each heading has an ID for linking */
+        var used = {};
+        var items = [];
+        for (var i = 0; i < headings.length; i++) {
+          var h = headings[i];
+          var base = h.id || h.textContent.toLowerCase().trim()
+            .replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
+          if (!base) base = 'toc-' + (i + 1);
+          var id = base;
+          var n = 2;
+          while (used[id]) { id = base + '-' + n; n++; }
+          used[id] = true;
+          h.id = id;
+          items.push({ id: id, text: h.textContent.trim(), tag: h.tagName });
+        }
+
+        /* Render TOC items */
+        var html = '';
+        for (var j = 0; j < items.length; j++) {
+          var it = items[j];
+          var level = it.tag.toLowerCase();
+          html += '<li class="parallel-toc-item toc-' + level + '">';
+          html += '<a href="#" class="parallel-toc-link" data-parallel-toc="' + it.id + '" title="' + it.text.replace(/"/g, '&quot;') + '">';
+          html += it.text.replace(/</g, '&lt;');
+          html += '</a></li>';
+        }
+        tocNav.innerHTML = html;
+
+        /* Click handler: scroll both columns to the heading */
+        tocNav.addEventListener('click', function (e) {
+          var link = e.target.closest('.parallel-toc-link');
+          if (!link) return;
+          e.preventDefault();
+          var targetId = link.getAttribute('data-parallel-toc');
+
+          /* Find the heading index in EN */
+          var enIdx = -1;
+          for (var k = 0; k < headings.length; k++) {
+            if (headings[k].id === targetId) { enIdx = k; break; }
+          }
+          if (enIdx < 0) return;
+
+          /* Scroll EN column to this heading */
+          var top = getTopWithin(headings[enIdx], colEn);
+          colEn.scrollTo({ top: top - 24, behavior: 'smooth' });
+
+          /* Find matching heading in RU (by same ordinal index) */
+          var colRu = document.getElementById('parallelRu');
+          if (colRu) {
+            var ruHeads = colRu.querySelectorAll('.lesson-article h2, .lesson-article h3');
+            if (enIdx < ruHeads.length) {
+              var topRu = getTopWithin(ruHeads[enIdx], colRu);
+              colRu.scrollTo({ top: topRu - 24, behavior: 'smooth' });
+            }
+          }
+
+          /* Auto-enable sync when clicking TOC */
+          if (!syncScrollEnabled) {
+            syncScrollEnabled = true;
+            var syncBtn = document.getElementById('syncToggle');
+            if (syncBtn) {
+              syncBtn.classList.add('active');
+              var icon = document.getElementById('syncIcon');
+              var label = document.getElementById('syncLabel');
+              if (icon) icon.textContent = '🔗';
+              if (label) label.textContent = 'Sync';
+            }
+          }
+        });
+
+        /* Highlight active section on scroll */
+        var tocLinks = tocNav.querySelectorAll('.parallel-toc-link');
+
+        function highlightActive() {
+          var colRect = colEn.getBoundingClientRect();
+          var trigger = colRect.top + colRect.height * 0.3;
+          var activeId = null;
+          for (var k = 0; k < headings.length; k++) {
+            var hRect = headings[k].getBoundingClientRect();
+            if (hRect.top <= trigger) activeId = headings[k].id;
+            else break;
+          }
+          for (var m = 0; m < tocLinks.length; m++) {
+            var linkId = tocLinks[m].getAttribute('data-parallel-toc');
+            tocLinks[m].classList.toggle('active', linkId === activeId);
+          }
+        }
+
+        colEn.addEventListener('scroll', highlightActive, { passive: true });
+        /* Initial highlight */
+        highlightActive();
       }
 
       function showError(title, msg) {
